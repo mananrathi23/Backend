@@ -1,6 +1,8 @@
-// For Login
 export const sendToken = (user, statusCode, message, res) => {
   const token = user.generateToken();
+
+  const isProduction = process.env.NODE_ENV === "production";
+
   res
     .status(statusCode)
     .cookie("token", token, {
@@ -8,6 +10,8 @@ export const sendToken = (user, statusCode, message, res) => {
         Date.now() + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000
       ),
       httpOnly: true,
+      secure: isProduction,        // ✅ true in production
+      sameSite: isProduction ? "None" : "Lax",  // ✅ None for cross-domain
     })
     .json({
       success: true,
