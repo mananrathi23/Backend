@@ -1,7 +1,9 @@
 import { app } from "./app.js";
 
-app.listen(process.env.PORT, () => {
-  console.log(`Server listening on port ${process.env.PORT}`);
-});
+if (process.env.NODE_ENV !== "production") {
+  app.listen(process.env.PORT || 3000, () => {
+    console.log(`Server listening on port ${process.env.PORT}`);
+  });
+}
 
-module.exports = app;
+export default app;
