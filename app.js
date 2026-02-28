@@ -7,21 +7,19 @@ import { errorMiddleware } from "./middlewares/error.js";
 import userRouter from "./routes/userRouter.js";
 import { removeUnverifiedAccounts } from "./automation/removeUnverifiedAccounts.js";
 
-export const app = express();
-config({ path: "./config.env" });
+config(); // ✅ remove the path, won't work on Vercel anyway
 
-app.use(
-  cors({
-    origin: [process.env.FRONTEND_URL],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
+const app = express(); // ✅ remove "export const" here
 
-app.use(cookieParser());  // use to do the authetication without which authentivation is not done.
+app.use(cors({
+  origin: [process.env.FRONTEND_URL],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true,
+}));
+
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 app.use("/api/v1/user", userRouter);
 
 removeUnverifiedAccounts();
@@ -29,4 +27,4 @@ connection();
 
 app.use(errorMiddleware);
 
-export default app;
+export default app; // ✅ only one export
