@@ -28,3 +28,5 @@ removeUnverifiedAccounts();
 connection();
 
 app.use(errorMiddleware);
+
+export default app;
