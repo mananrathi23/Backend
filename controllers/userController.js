@@ -13,9 +13,9 @@ function getModelByRole(role) {
   switch (role) {
     case "Student": return Student;
     case "Teacher": return Teacher;
-    case "Alumni":  return Alumni;
-    case "Admin":   return Admin;
-    default:        return null;
+    case "Alumni": return Alumni;
+    case "Admin": return Admin;
+    default: return null;
   }
 }
 
@@ -99,38 +99,38 @@ async function sendVerificationCode(
   try {
     if (verificationMethod === "email") {
       const message = generateEmailTemplate(verificationCode);
-      sendEmail({ email, subject: "Your Verification Code", message });
+      await sendEmail({ email, subject: "Your Verification Code", message });
       res.status(200).json({
         success: true,
         message: `Verification email successfully sent to ${name}`,
       });
-    } else if (verificationMethod === "phone") {
-      const verificationCodeWithSpace = verificationCode
-        .toString()
-        .split("")
-        .join(" ");
-      await client.calls.create({
-        twiml: `<Response><Say>Your verification code is ${verificationCodeWithSpace}. Your verification code is ${verificationCodeWithSpace}.</Say></Response>`,
-        from: process.env.TWILIO_PHONE_NUMBER,
-        to: phone,
-      });
-      res.status(200).json({
-        success: true,
-        message: `OTP sent.`,
-      });
-    } else {
-      return res.status(500).json({
-        success: false,
-        message: "Invalid verification method.",
-      });
-    }
-  } catch (error) {
-    console.log(error);
+  } else if (verificationMethod === "phone") {
+    const verificationCodeWithSpace = verificationCode
+      .toString()
+      .split("")
+      .join(" ");
+    await client.calls.create({
+      twiml: `<Response><Say>Your verification code is ${verificationCodeWithSpace}. Your verification code is ${verificationCodeWithSpace}.</Say></Response>`,
+      from: process.env.TWILIO_PHONE_NUMBER,
+      to: phone,
+    });
+    res.status(200).json({
+      success: true,
+      message: `OTP sent.`,
+    });
+  } else {
     return res.status(500).json({
       success: false,
-      message: "Verification code failed to send.",
+      message: "Invalid verification method.",
     });
   }
+} catch (error) {
+  console.log(error);
+  return res.status(500).json({
+    success: false,
+    message: "Verification code failed to send.",
+  });
+}
 }
 
 // VERIFY OTP 
@@ -336,8 +336,8 @@ export const updateProfile = catchAsyncError(async (req, res, next) => {
   const allowedFields = {
     Student: ["department", "year", "section", "cgpa", "skills", "bio", "linkedIn", "github", "enrollmentNumber"],
     Teacher: ["department", "designation", "subjectsTaught", "qualifications", "experience", "bio", "linkedIn", "employeeId"],
-    Alumni:  ["department", "degree", "graduationYear", "currentCompany", "currentDesignation", "currentLocation", "industry", "skills", "bio", "linkedIn", "github", "availableForMentorship"],
-    Admin:   ["department"],
+    Alumni: ["department", "degree", "graduationYear", "currentCompany", "currentDesignation", "currentLocation", "industry", "skills", "bio", "linkedIn", "github", "availableForMentorship"],
+    Admin: ["department"],
   };
 
   const fields = allowedFields[role];
