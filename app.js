@@ -18,7 +18,7 @@ app.use(
   })
 );
 
-app.use(cookieParser());  // use to do the authetication without which authentivation is not done.
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -28,3 +28,5 @@ removeUnverifiedAccounts();
 connection();
 
 app.use(errorMiddleware);
+
+export default app;  // ← ADD THIS LINE
